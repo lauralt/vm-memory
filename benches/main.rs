@@ -8,6 +8,7 @@
 
 extern crate criterion;
 extern crate vm_memory;
+extern crate vmm_sys_util;
 
 use std::fs::File;
 use std::io::Cursor;
@@ -18,9 +19,30 @@ use criterion::{black_box, criterion_group, criterion_main, Criterion};
 #[cfg(feature = "backend-mmap")]
 use vm_memory::GuestMemoryMmap;
 use vm_memory::{ByteValued, Bytes, GuestAddress, GuestMemory, GuestMemoryError};
+use vmm_sys_util::tempfile::TempFile;
+
+const REGION_SIZE: u64 = 0x8000_0000;
+const REGIONS_COUNT: u64 = 8;
+const ACCESS_SIZE: usize = 0x200;
 
 /// Result of guest memory operations.
 pub type Result<T> = std::result::Result<T, GuestMemoryError>;
+
+#[repr(C)]
+#[derive(Copy, Clone, Default)]
+struct SmallDummy {
+    a: u32,
+    b: u32,
+}
+unsafe impl ByteValued for SmallDummy {}
+
+#[repr(C)]
+#[derive(Copy, Clone, Default)]
+struct BigDummy {
+    elements: [u64; 8],
+}
+
+unsafe impl ByteValued for BigDummy {}
 
 #[cfg(feature = "backend-mmap")]
 fn make_image(size: usize) -> Vec<u8> {
@@ -32,223 +54,187 @@ fn make_image(size: usize) -> Vec<u8> {
     image
 }
 
-#[cfg(feature = "backend-mmap")]
-/// Reads up to `count` bytes.
-fn read_bytes_from<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    image: &Vec<u8>,
-    count: usize,
-) -> Result<usize> {
-    memory.read_from(offset, &mut Cursor::new(&image), count)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Reads up to `count` bytes from a file.
-fn read_bytes_from_file<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    image: &mut File,
-    count: usize,
-) -> Result<usize> {
-    memory.read_from(offset, image, count)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Reads exact `count` bytes.
-fn read_exact_bytes_from<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    image: &Vec<u8>,
-    count: usize,
-) -> Result<()> {
-    memory.read_exact_from(offset, &mut Cursor::new(&image), count)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Reads a slice. Returns error if there isn't enough data to fill the whole buffer.
-fn read_slice_from<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    slice: &mut [u8],
-) -> Result<()> {
-    memory.read_slice(slice, offset)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Reads some <T> obj.
-fn read_obj<M: GuestMemory, T: ByteValued>(memory: &M, offset: GuestAddress) -> Result<T> {
-    memory.read_obj::<T>(offset)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Reads data into a slice.
-fn read<M: GuestMemory>(memory: &M, offset: GuestAddress, slice: &mut [u8]) -> Result<usize> {
-    memory.read(slice, offset)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Writes up to `count` bytes.
-fn write_bytes_to<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    image: &mut Vec<u8>,
-    count: usize,
-) -> Result<usize> {
-    memory.write_to(offset, &mut Cursor::new(image), count)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Writes up to `count` bytes from a file.
-fn write_bytes_to_file<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    image: &mut File,
-    count: usize,
-) -> Result<usize> {
-    memory.write_to(offset, image, count)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Writes exact `count` bytes.
-fn write_exact_bytes_to<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    image: &mut Vec<u8>,
-    count: usize,
-) -> Result<()> {
-    memory.write_all_to(offset, &mut Cursor::new(image), count)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Writes a slice. Returns error if there isn't enough data to fill the whole buffer.
-fn write_slice_to<M: GuestMemory>(
-    memory: &M,
-    offset: GuestAddress,
-    slice: &mut [u8],
-) -> Result<()> {
-    memory.write_slice(slice, offset)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Writes some <T> obj.
-fn write_obj<M: GuestMemory, T: ByteValued>(
-    memory: &M,
-    offset: GuestAddress,
-    value: T,
-) -> Result<()> {
-    memory.write_obj::<T>(value, offset)
-}
-
-#[cfg(feature = "backend-mmap")]
-/// Writes a slice.
-fn write<M: GuestMemory>(memory: &M, offset: GuestAddress, slice: &mut [u8]) -> Result<usize> {
-    memory.write(slice, offset)
-}
-
 pub fn criterion_benchmark(c: &mut Criterion) {
     #[cfg(feature = "backend-mmap")]
     {
-        let start_addr1 = GuestAddress(0x0);
-        let start_addr2 = GuestAddress(0x1000);
-        let start_addr3 = GuestAddress(0x2100);
-        let start_addr4 = GuestAddress(0x3100);
-        let mem = GuestMemoryMmap::from_ranges(&[
-            (start_addr1, 0x1000 as usize),
-            (start_addr2, 0x1000 as usize),
-            (start_addr3, 0x1000 as usize),
-            (start_addr4, 0x1000 as usize),
-        ])
-        .unwrap();
-        assert_eq!(mem.last_addr(), GuestAddress(0x3FFF));
+        let mut regions: Vec<(GuestAddress, usize)> = Vec::with_capacity(REGIONS_COUNT as usize);
+        for i in 0..REGIONS_COUNT {
+            regions.push((GuestAddress(i * REGION_SIZE), REGION_SIZE as usize));
+        }
+        assert_eq!(regions.len() as u64, REGIONS_COUNT);
 
-        let mut image = make_image(0x200);
-        let mut offsets = vec![
-            GuestAddress(0x100),
-            // offset that will involve reading/writing from 2 regions.
-            GuestAddress(0xF00),
-            // offset that will involve (trying) reading/writing from 2 regions
-            // (with a hole between them).
-            GuestAddress(0x1F00),
+        let memory = GuestMemoryMmap::from_ranges(regions.as_slice()).unwrap();
+        assert_eq!(
+            memory.last_addr(),
+            GuestAddress(REGION_SIZE * REGIONS_COUNT - 0x01)
+        );
+
+        let mut image = make_image(ACCESS_SIZE);
+        let offsets = [
+            GuestAddress(ACCESS_SIZE as u64 / 2),
+            // offset that will involve reading/writing from the first 2 regions.
+            GuestAddress(REGION_SIZE - ACCESS_SIZE as u64 / 2),
+            // offset that will involve reading/writing from the last 2 regions.
+            GuestAddress(REGION_SIZE * (REGIONS_COUNT - 1) - ACCESS_SIZE as u64 / 2),
         ];
-        let count: usize = 0x200;
-        let buf = &mut [0u8; 0x200 as usize];
+        let buf = &mut [0u8; ACCESS_SIZE];
         let mut file = File::open(Path::new("/dev/urandom")).unwrap();
-        let mut file_to_write = File::create("foo.txt").unwrap();
+        let temp = TempFile::new().unwrap();
+        let mut file_to_write = temp.as_file();
 
         // Here comes an ugly loop :).
         for offset in offsets.iter() {
             // Read stuff.
             c.bench_function(format!("read_from_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(read_bytes_from(&mem, *offset, &image, count).unwrap()))
+                b.iter(|| {
+                    black_box(
+                        memory
+                            .read_from(*offset, &mut Cursor::new(&image), ACCESS_SIZE)
+                            .unwrap(),
+                    )
+                })
             });
             c.bench_function(format!("read_from_file_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(read_bytes_from_file(&mem, *offset, &mut file, count).unwrap()))
+                b.iter(|| black_box(memory.read_from(*offset, &mut file, ACCESS_SIZE).unwrap()))
             });
-
-            // It would probably make sense to measure this for other data types too.
-            c.bench_function(format!("read_obj_from_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(read_obj::<_, u8>(&mem, *offset).unwrap()))
+            c.bench_function(format!("read_exact_from_{:#0x}", offset.0).as_str(), |b| {
+                b.iter(|| {
+                    black_box(
+                        memory
+                            .read_exact_from(*offset, &mut Cursor::new(&mut image), ACCESS_SIZE)
+                            .unwrap(),
+                    )
+                })
             });
-
+            c.bench_function(
+                format!("read_entire_slice_from_{:#0x}", offset.0).as_str(),
+                |b| b.iter(|| black_box(memory.read_slice(buf, *offset).unwrap())),
+            );
             c.bench_function(format!("read_slice_from_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(read(&mem, *offset, buf).unwrap()))
+                b.iter(|| black_box(memory.read(buf, *offset).unwrap()))
             });
 
             // Write stuff.
             c.bench_function(format!("write_to_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(write_bytes_to(&mem, *offset, &mut image, count).unwrap()))
+                b.iter(|| {
+                    black_box(
+                        memory
+                            .write_to(*offset, &mut Cursor::new(&mut image), ACCESS_SIZE)
+                            .unwrap(),
+                    )
+                })
             });
             c.bench_function(format!("write_to_file_{:#0x}", offset.0).as_str(), |b| {
                 b.iter(|| {
                     black_box(
-                        write_bytes_to_file(&mem, *offset, &mut file_to_write, count).unwrap(),
+                        memory
+                            .write_to(*offset, &mut file_to_write, ACCESS_SIZE)
+                            .unwrap(),
                     )
                 })
             });
-
-            c.bench_function(format!("write_obj_to_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(write_obj::<_, u8>(&mem, *offset, 0x11).unwrap()))
+            c.bench_function(format!("write_exact_to_{:#0x}", offset.0).as_str(), |b| {
+                b.iter(|| {
+                    black_box(
+                        memory
+                            .write_all_to(*offset, &mut Cursor::new(&mut image), ACCESS_SIZE)
+                            .unwrap(),
+                    )
+                })
             });
-
+            c.bench_function(
+                format!("write_entire_slice_to_{:#0x}", offset.0).as_str(),
+                |b| b.iter(|| black_box(memory.write_slice(buf, *offset).unwrap())),
+            );
             c.bench_function(format!("write_slice_to_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(write(&mem, *offset, buf).unwrap()))
+                b.iter(|| black_box(memory.write(buf, *offset).unwrap()))
+            });
+        }
+    }
+}
+
+pub fn criterion_benchmark_2(c: &mut Criterion) {
+    #[cfg(feature = "backend-mmap")]
+    {
+        let mut regions: Vec<(GuestAddress, usize)> = Vec::with_capacity(REGIONS_COUNT as usize);
+        for i in 0..REGIONS_COUNT {
+            regions.push((GuestAddress(i * REGION_SIZE), REGION_SIZE as usize));
+        }
+        assert_eq!(regions.len() as u64, REGIONS_COUNT);
+
+        let memory = GuestMemoryMmap::from_ranges(regions.as_slice()).unwrap();
+        assert_eq!(
+            memory.last_addr(),
+            GuestAddress(REGION_SIZE * REGIONS_COUNT - 0x01)
+        );
+
+        // Here comes some duplicate code but it got weird when I tried to switch to a loop.
+        // Will return to it.
+        let small_size = std::mem::size_of::<SmallDummy>();
+
+        let some_small_dummy = SmallDummy {
+            a: 0x1111_2222,
+            b: 0x3333_4444,
+        };
+
+        let mut offsets_for_obj = [
+            GuestAddress(ACCESS_SIZE as u64 / 2),
+            // offset that will involve reading/writing from the first 2 regions.
+            GuestAddress(REGION_SIZE - small_size as u64 / 2),
+            // offset that will involve reading/writing from the last 2 regions.
+            GuestAddress(REGION_SIZE * (REGIONS_COUNT - 1) - small_size as u64 / 2),
+        ];
+
+        for offset in offsets_for_obj.iter() {
+            c.bench_function(format!("read_obj_from_{:#0x}", offset.0).as_str(), |b| {
+                b.iter(|| black_box(memory.read_obj::<SmallDummy>(*offset).unwrap()))
+            });
+            c.bench_function(format!("write_obj_to_{:#0x}", offset.0).as_str(), |b| {
+                b.iter(|| {
+                    black_box(
+                        memory
+                            .write_obj::<SmallDummy>(some_small_dummy, *offset)
+                            .unwrap(),
+                    )
+                })
             });
         }
 
-        // Remove the last offset because the functions in the next loop panic if they can't fill
-        // the entire buffer.
-        offsets.pop();
+        let big_size = std::mem::size_of::<BigDummy>();
 
-        // Here comes another ugly loop, but this time a shorter one.
-        for offset in offsets.iter() {
-            c.bench_function(format!("read_exact_from_{:#0x}", offset.0).as_str(), |b| {
-                b.iter(|| black_box(read_exact_bytes_from(&mem, *offset, &image, count).unwrap()))
+        let some_big_dummy = BigDummy {
+            elements: [0x1111_2222_3333_4444; 8],
+        };
+
+        offsets_for_obj = [
+            GuestAddress(ACCESS_SIZE as u64 / 2),
+            // offset that will involve reading/writing from the first 2 regions.
+            GuestAddress(REGION_SIZE - big_size as u64 / 2),
+            // offset that will involve reading/writing from the last 2 regions.
+            GuestAddress(REGION_SIZE * (REGIONS_COUNT - 1) - big_size as u64 / 2),
+        ];
+
+        for offset in offsets_for_obj.iter() {
+            c.bench_function(format!("read_obj_from_{:#0x}", offset.0).as_str(), |b| {
+                b.iter(|| black_box(memory.read_obj::<BigDummy>(*offset).unwrap()))
             });
-
-            c.bench_function(
-                format!("read_entire_slice_from_{:#0x}", offset.0).as_str(),
-                |b| b.iter(|| black_box(read_slice_from(&mem, *offset, buf).unwrap())),
-            );
-
-            c.bench_function(format!("write_exact_to_{:#0x}", offset.0).as_str(), |b| {
+            c.bench_function(format!("write_obj_to_{:#0x}", offset.0).as_str(), |b| {
                 b.iter(|| {
-                    black_box(write_exact_bytes_to(&mem, *offset, &mut image, count).unwrap())
+                    black_box(
+                        memory
+                            .write_obj::<BigDummy>(some_big_dummy, *offset)
+                            .unwrap(),
+                    )
                 })
             });
-
-            c.bench_function(
-                format!("write_entire_slice_to_{:#0x}", offset.0).as_str(),
-                |b| b.iter(|| black_box(write_slice_to(&mem, *offset, buf).unwrap())),
-            );
         }
     }
 }
 
 criterion_group! {
     name = benches;
-    config = Criterion::default().sample_size(200).measurement_time(std::time::Duration::from_secs(50));
-    targets = criterion_benchmark
+    config = Criterion::default().sample_size(200).measurement_time(std::time::Duration::from_secs(5));
+    targets = criterion_benchmark, criterion_benchmark_2
 }
 
 criterion_main! {

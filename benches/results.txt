@@ -1,0 +1,559 @@
+- measurement time: only 5s, will rerun with a longer one
+- these were obtained for the current `benches/main.rs` from this commit
+- instance type: m5ad.xlarge, 4 vCPUs
+
+Benchmarking read_from_0x100
+Benchmarking read_from_0x100: Warming up for 3.0000 s
+Benchmarking read_from_0x100: Collecting 200 samples in estimated 5.0006 s (111374100 iterations)
+Benchmarking read_from_0x100: Analyzing
+read_from_0x100         time:   [44.771 ns 45.288 ns 45.844 ns]
+                        change: [+0.0430% +1.4078% +2.7731%] (p = 0.04 < 0.05)
+                        Change within noise threshold.
+Found 6 outliers among 200 measurements (3.00%)
+  4 (2.00%) high mild
+  2 (1.00%) high severe
+slope  [44.771 ns 45.844 ns] R^2            [0.4888353 0.4877088]
+mean   [44.601 ns 45.467 ns] std. dev.      [2.6252 ns 3.6125 ns]
+median [43.373 ns 43.734 ns] med. abs. dev. [819.31 ps 1.4829 ns]
+
+Benchmarking read_from_file_0x100
+Benchmarking read_from_file_0x100: Warming up for 3.0000 s
+Benchmarking read_from_file_0x100: Collecting 200 samples in estimated 5.1440 s (562800 iterations)
+Benchmarking read_from_file_0x100: Analyzing
+read_from_file_0x100    time:   [9.0333 us 9.0592 us 9.0871 us]
+                        change: [+0.1115% +0.5248% +0.9226%] (p = 0.01 < 0.05)
+                        Change within noise threshold.
+Found 31 outliers among 200 measurements (15.50%)
+  30 (15.00%) high mild
+  1 (0.50%) high severe
+slope  [9.0333 us 9.0871 us] R^2            [0.9264027 0.9261064]
+mean   [9.0525 us 9.1060 us] std. dev.      [168.58 ns 213.03 ns]
+median [8.9796 us 9.0080 us] med. abs. dev. [53.675 ns 95.329 ns]
+
+Benchmarking read_exact_from_0x100
+Benchmarking read_exact_from_0x100: Warming up for 3.0000 s
+Benchmarking read_exact_from_0x100: Collecting 200 samples in estimated 5.0000 s (105625500 iterations)
+Benchmarking read_exact_from_0x100: Analyzing
+read_exact_from_0x100   time:   [46.938 ns 47.398 ns 47.882 ns]
+                        change: [-4.4542% -3.5272% -2.5308%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 27 outliers among 200 measurements (13.50%)
+  26 (13.00%) high mild
+  1 (0.50%) high severe
+slope  [46.938 ns 47.882 ns] R^2            [0.6449798 0.6442030]
+mean   [46.809 ns 47.501 ns] std. dev.      [2.1990 ns 2.7698 ns]
+median [45.937 ns 46.214 ns] med. abs. dev. [787.74 ps 1.2776 ns]
+
+Benchmarking read_entire_slice_from_0x100
+Benchmarking read_entire_slice_from_0x100: Warming up for 3.0000 s
+Benchmarking read_entire_slice_from_0x100: Collecting 200 samples in estimated 5.0007 s (95495100 iterations)
+Benchmarking read_entire_slice_from_0x100: Analyzing
+read_entire_slice_from_0x100
+                        time:   [52.103 ns 52.522 ns 52.977 ns]
+                        change: [+9.1423% +10.554% +12.207%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 13 outliers among 200 measurements (6.50%)
+  13 (6.50%) high mild
+slope  [52.103 ns 52.977 ns] R^2            [0.6375699 0.6365044]
+mean   [53.216 ns 54.572 ns] std. dev.      [4.1111 ns 5.6394 ns]
+median [51.160 ns 51.840 ns] med. abs. dev. [1.0483 ns 2.1886 ns]
+
+Benchmarking read_slice_from_0x100
+Benchmarking read_slice_from_0x100: Warming up for 3.0000 s
+Benchmarking read_slice_from_0x100: Collecting 200 samples in estimated 5.0001 s (94711200 iterations)
+Benchmarking read_slice_from_0x100: Analyzing
+read_slice_from_0x100   time:   [52.155 ns 52.475 ns 52.824 ns]
+                        change: [+7.9819% +9.0736% +10.046%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 15 outliers among 200 measurements (7.50%)
+  15 (7.50%) high mild
+slope  [52.155 ns 52.824 ns] R^2            [0.6804981 0.6795766]
+mean   [52.448 ns 53.205 ns] std. dev.      [2.4021 ns 3.0014 ns]
+median [51.497 ns 51.792 ns] med. abs. dev. [741.18 ps 1.3426 ns]
+
+Benchmarking write_to_0x100
+Benchmarking write_to_0x100: Warming up for 3.0000 s
+Benchmarking write_to_0x100: Collecting 200 samples in estimated 5.0009 s (96882000 iterations)
+Benchmarking write_to_0x100: Analyzing
+write_to_0x100          time:   [51.000 ns 51.404 ns 51.849 ns]
+                        change: [+0.1499% +1.2923% +2.5080%] (p = 0.03 < 0.05)
+                        Change within noise threshold.
+Found 21 outliers among 200 measurements (10.50%)
+  20 (10.00%) high mild
+  1 (0.50%) high severe
+slope  [51.000 ns 51.849 ns] R^2            [0.6097874 0.6084159]
+mean   [51.408 ns 52.248 ns] std. dev.      [2.6504 ns 3.3833 ns]
+median [50.317 ns 50.766 ns] med. abs. dev. [1.0296 ns 1.8052 ns]
+
+Benchmarking write_to_file_0x100
+Benchmarking write_to_file_0x100: Warming up for 3.0000 s
+Benchmarking write_to_file_0x100: Collecting 200 samples in estimated 5.0024 s (3437100 iterations)
+Benchmarking write_to_file_0x100: Analyzing
+write_to_file_0x100     time:   [2.0219 us 2.1876 us 2.3464 us]
+                        change: [-7.1368% -0.8101% +5.5328%] (p = 0.80 > 0.05)
+                        No change in performance detected.
+Found 41 outliers among 200 measurements (20.50%)
+  41 (20.50%) high severe
+slope  [2.0219 us 2.3464 us] R^2            [0.1203351 0.1206970]
+mean   [1.7381 us 1.9092 us] std. dev.      [499.12 ns 729.56 ns]
+median [1.5482 us 1.5674 us] med. abs. dev. [41.803 ns 61.031 ns]
+
+Benchmarking write_exact_to_0x100
+Benchmarking write_exact_to_0x100: Warming up for 3.0000 s
+Benchmarking write_exact_to_0x100: Collecting 200 samples in estimated 5.0002 s (89847000 iterations)
+Benchmarking write_exact_to_0x100: Analyzing
+write_exact_to_0x100    time:   [54.295 ns 55.066 ns 55.811 ns]
+                        change: [+3.5914% +5.0884% +6.6162%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [54.295 ns 55.811 ns] R^2            [0.4171820 0.4176994]
+mean   [53.017 ns 54.154 ns] std. dev.      [3.6847 ns 4.5175 ns]
+median [51.190 ns 52.625 ns] med. abs. dev. [1.7805 ns 3.8635 ns]
+
+Benchmarking write_entire_slice_to_0x100
+Benchmarking write_entire_slice_to_0x100: Warming up for 3.0000 s
+Benchmarking write_entire_slice_to_0x100: Collecting 200 samples in estimated 5.0003 s (93344400 iterations)
+Benchmarking write_entire_slice_to_0x100: Analyzing
+write_entire_slice_to_0x100
+                        time:   [47.976 ns 48.441 ns 48.940 ns]
+                        change: [-2.0645% -0.6319% +0.8920%] (p = 0.42 > 0.05)
+                        No change in performance detected.
+slope  [47.976 ns 48.940 ns] R^2            [0.5515636 0.5505453]
+mean   [49.170 ns 50.148 ns] std. dev.      [3.2949 ns 3.7648 ns]
+median [47.077 ns 50.282 ns] med. abs. dev. [1.6119 ns 5.4987 ns]
+
+Benchmarking write_slice_to_0x100
+Benchmarking write_slice_to_0x100: Warming up for 3.0000 s
+Benchmarking write_slice_to_0x100: Collecting 200 samples in estimated 5.0008 s (101585400 iterations)
+Benchmarking write_slice_to_0x100: Analyzing
+write_slice_to_0x100    time:   [48.605 ns 49.167 ns 49.771 ns]
+                        change: [+0.6903% +1.8611% +3.1431%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 29 outliers among 200 measurements (14.50%)
+  22 (11.00%) high mild
+  7 (3.50%) high severe
+slope  [48.605 ns 49.771 ns] R^2            [0.4112688 0.4101966]
+mean   [48.622 ns 49.694 ns] std. dev.      [3.0742 ns 4.6908 ns]
+median [47.326 ns 47.677 ns] med. abs. dev. [627.86 ps 1.2522 ns]
+
+Benchmarking read_from_0x7fffff00
+Benchmarking read_from_0x7fffff00: Warming up for 3.0000 s
+Benchmarking read_from_0x7fffff00: Collecting 200 samples in estimated 5.0013 s (66088800 iterations)
+Benchmarking read_from_0x7fffff00: Analyzing
+read_from_0x7fffff00    time:   [74.648 ns 75.338 ns 76.039 ns]
+                        change: [+11.419% +12.870% +14.322%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [74.648 ns 76.039 ns] R^2            [0.6019747 0.6017254]
+mean   [74.868 ns 76.111 ns] std. dev.      [4.0513 ns 4.8831 ns]
+median [72.842 ns 73.564 ns] med. abs. dev. [1.3979 ns 2.5743 ns]
+
+Benchmarking read_from_file_0x7fffff00
+Benchmarking read_from_file_0x7fffff00: Warming up for 3.0000 s
+Benchmarking read_from_file_0x7fffff00: Collecting 200 samples in estimated 5.1696 s (502500 iterations)
+Benchmarking read_from_file_0x7fffff00: Analyzing
+read_from_file_0x7fffff00
+                        time:   [10.152 us 10.183 us 10.218 us]
+                        change: [-0.1749% +0.2418% +0.6500%] (p = 0.27 > 0.05)
+                        No change in performance detected.
+Found 5 outliers among 200 measurements (2.50%)
+  5 (2.50%) high mild
+slope  [10.152 us 10.218 us] R^2            [0.9014327 0.9010612]
+mean   [10.184 us 10.253 us] std. dev.      [220.16 ns 274.84 ns]
+median [10.080 us 10.118 us] med. abs. dev. [81.032 ns 137.79 ns]
+
+Benchmarking read_exact_from_0x7fffff00
+Benchmarking read_exact_from_0x7fffff00: Warming up for 3.0000 s
+Benchmarking read_exact_from_0x7fffff00: Collecting 200 samples in estimated 5.0006 s (63958200 iterations)
+Benchmarking read_exact_from_0x7fffff00: Analyzing
+read_exact_from_0x7fffff00
+                        time:   [77.890 ns 78.485 ns 79.123 ns]
+                        change: [+11.857% +12.885% +14.044%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 24 outliers among 200 measurements (12.00%)
+  23 (11.50%) high mild
+  1 (0.50%) high severe
+slope  [77.890 ns 79.123 ns] R^2            [0.6429511 0.6420161]
+mean   [78.236 ns 79.414 ns] std. dev.      [3.7257 ns 4.7610 ns]
+median [76.642 ns 77.236 ns] med. abs. dev. [1.3046 ns 2.2036 ns]
+
+Benchmarking read_entire_slice_from_0x7fffff00
+Benchmarking read_entire_slice_from_0x7fffff00: Warming up for 3.0000 s
+Benchmarking read_entire_slice_from_0x7fffff00: Collecting 200 samples in estimated 5.0004 s (61666800 iterations)
+Benchmarking read_entire_slice_from_0x7fffff00: Analyzing
+read_entire_slice_from_0x7fffff00
+                        time:   [80.570 ns 81.185 ns 81.833 ns]
+                        change: [+14.043% +15.411% +16.667%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [80.570 ns 81.833 ns] R^2            [0.5999486 0.5992569]
+mean   [81.810 ns 83.278 ns] std. dev.      [4.8125 ns 5.7586 ns]
+median [79.277 ns 80.047 ns] med. abs. dev. [1.4006 ns 2.8047 ns]
+
+Benchmarking read_slice_from_0x7fffff00
+Benchmarking read_slice_from_0x7fffff00: Warming up for 3.0000 s
+Benchmarking read_slice_from_0x7fffff00: Collecting 200 samples in estimated 5.0016 s (61646700 iterations)
+Benchmarking read_slice_from_0x7fffff00: Analyzing
+read_slice_from_0x7fffff00
+                        time:   [80.434 ns 81.175 ns 81.947 ns]
+                        change: [+13.415% +14.530% +15.706%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 17 outliers among 200 measurements (8.50%)
+  17 (8.50%) high mild
+slope  [80.434 ns 81.947 ns] R^2            [0.5509773 0.5503019]
+mean   [80.145 ns 81.407 ns] std. dev.      [4.0128 ns 5.0321 ns]
+median [78.549 ns 79.394 ns] med. abs. dev. [1.6651 ns 2.7940 ns]
+
+Benchmarking write_to_0x7fffff00
+Benchmarking write_to_0x7fffff00: Warming up for 3.0000 s
+Benchmarking write_to_0x7fffff00: Collecting 200 samples in estimated 5.0002 s (45968700 iterations)
+Benchmarking write_to_0x7fffff00: Analyzing
+write_to_0x7fffff00     time:   [107.03 ns 108.06 ns 109.14 ns]
+                        change: [+0.8456% +2.5007% +4.1479%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 9 outliers among 200 measurements (4.50%)
+  9 (4.50%) high mild
+slope  [107.03 ns 109.14 ns] R^2            [0.5298751 0.5292138]
+mean   [108.16 ns 110.23 ns] std. dev.      [6.5793 ns 8.4024 ns]
+median [106.21 ns 108.42 ns] med. abs. dev. [5.2979 ns 7.6133 ns]
+
+Benchmarking write_to_file_0x7fffff00
+Benchmarking write_to_file_0x7fffff00: Warming up for 3.0000 s
+Benchmarking write_to_file_0x7fffff00: Collecting 200 samples in estimated 5.0249 s (1929600 iterations)
+Benchmarking write_to_file_0x7fffff00: Analyzing
+write_to_file_0x7fffff00
+                        time:   [2.6825 us 2.7140 us 2.7451 us]
+                        change: [-2.3501% -1.1062% +0.2001%] (p = 0.10 > 0.05)
+                        No change in performance detected.
+slope  [2.6825 us 2.7451 us] R^2            [0.5423523 0.5425549]
+mean   [2.6488 us 2.6941 us] std. dev.      [149.14 ns 175.65 ns]
+median [2.5776 us 2.6019 us] med. abs. dev. [51.126 ns 112.75 ns]
+
+Benchmarking write_exact_to_0x7fffff00
+Benchmarking write_exact_to_0x7fffff00: Warming up for 3.0000 s
+Benchmarking write_exact_to_0x7fffff00: Collecting 200 samples in estimated 5.0020 s (41707500 iterations)
+Benchmarking write_exact_to_0x7fffff00: Analyzing
+write_exact_to_0x7fffff00
+                        time:   [118.87 ns 119.64 ns 120.40 ns]
+                        change: [+1.6027% +2.5813% +3.5745%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [118.87 ns 120.40 ns] R^2            [0.7298785 0.7301598]
+mean   [118.78 ns 120.08 ns] std. dev.      [4.2403 ns 5.2060 ns]
+median [118.17 ns 119.77 ns] med. abs. dev. [4.1303 ns 5.6430 ns]
+
+Benchmarking write_entire_slice_to_0x7fffff00
+Benchmarking write_entire_slice_to_0x7fffff00: Warming up for 3.0000 s
+Benchmarking write_entire_slice_to_0x7fffff00: Collecting 200 samples in estimated 5.0005 s (70289700 iterations)
+Benchmarking write_entire_slice_to_0x7fffff00: Analyzing
+write_entire_slice_to_0x7fffff00
+                        time:   [70.556 ns 71.269 ns 72.025 ns]
+                        change: [-1.5550% -0.2920% +0.9479%] (p = 0.64 > 0.05)
+                        No change in performance detected.
+Found 12 outliers among 200 measurements (6.00%)
+  12 (6.00%) high mild
+slope  [70.556 ns 72.025 ns] R^2            [0.4922622 0.4913505]
+mean   [70.359 ns 71.607 ns] std. dev.      [3.9707 ns 5.0171 ns]
+median [68.619 ns 69.334 ns] med. abs. dev. [1.5383 ns 2.6527 ns]
+
+Benchmarking write_slice_to_0x7fffff00
+Benchmarking write_slice_to_0x7fffff00: Warming up for 3.0000 s
+Benchmarking write_slice_to_0x7fffff00: Collecting 200 samples in estimated 5.0009 s (69566100 iterations)
+Benchmarking write_slice_to_0x7fffff00: Analyzing
+write_slice_to_0x7fffff00
+                        time:   [70.882 ns 71.454 ns 72.060 ns]
+                        change: [-1.3105% -0.2770% +0.7703%] (p = 0.61 > 0.05)
+                        No change in performance detected.
+Found 17 outliers among 200 measurements (8.50%)
+  17 (8.50%) high mild
+slope  [70.882 ns 72.060 ns] R^2            [0.5821850 0.5813408]
+mean   [70.783 ns 71.850 ns] std. dev.      [3.3887 ns 4.2604 ns]
+median [69.457 ns 69.932 ns] med. abs. dev. [1.0803 ns 1.9305 ns]
+
+Benchmarking read_from_0x37fffff00
+Benchmarking read_from_0x37fffff00: Warming up for 3.0000 s
+Benchmarking read_from_0x37fffff00: Collecting 200 samples in estimated 5.0012 s (66531000 iterations)
+Benchmarking read_from_0x37fffff00: Analyzing
+read_from_0x37fffff00   time:   [74.651 ns 75.390 ns 76.171 ns]
+                        change: [+6.9544% +8.4186% +9.8758%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 3 outliers among 200 measurements (1.50%)
+  3 (1.50%) high mild
+slope  [74.651 ns 76.171 ns] R^2            [0.6527799 0.6519736]
+mean   [74.473 ns 75.663 ns] std. dev.      [3.7936 ns 4.7210 ns]
+median [72.728 ns 73.521 ns] med. abs. dev. [1.3421 ns 2.6584 ns]
+
+Benchmarking read_from_file_0x37fffff00
+Benchmarking read_from_file_0x37fffff00: Warming up for 3.0000 s
+Benchmarking read_from_file_0x37fffff00: Collecting 200 samples in estimated 5.1475 s (502500 iterations)
+Benchmarking read_from_file_0x37fffff00: Analyzing
+read_from_file_0x37fffff00
+                        time:   [10.158 us 10.189 us 10.222 us]
+                        change: [+0.1860% +0.5963% +1.0084%] (p = 0.01 < 0.05)
+                        Change within noise threshold.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [10.158 us 10.222 us] R^2            [0.9146619 0.9143207]
+mean   [10.202 us 10.268 us] std. dev.      [219.10 ns 263.14 ns]
+median [10.095 us 10.141 us] med. abs. dev. [68.318 ns 141.46 ns]
+
+Benchmarking read_exact_from_0x37fffff00
+Benchmarking read_exact_from_0x37fffff00: Warming up for 3.0000 s
+Benchmarking read_exact_from_0x37fffff00: Collecting 200 samples in estimated 5.0014 s (61707000 iterations)
+Benchmarking read_exact_from_0x37fffff00: Analyzing
+read_exact_from_0x37fffff00
+                        time:   [80.567 ns 81.250 ns 81.975 ns]
+                        change: [+13.575% +14.643% +15.668%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 36 outliers among 200 measurements (18.00%)
+  13 (6.50%) high mild
+  23 (11.50%) high severe
+slope  [80.567 ns 81.975 ns] R^2            [0.6531237 0.6521907]
+mean   [80.614 ns 81.818 ns] std. dev.      [3.8286 ns 4.8194 ns]
+median [79.170 ns 79.792 ns] med. abs. dev. [1.2318 ns 1.9915 ns]
+
+Benchmarking read_entire_slice_from_0x37fffff00
+Benchmarking read_entire_slice_from_0x37fffff00: Warming up for 3.0000 s
+Benchmarking read_entire_slice_from_0x37fffff00: Collecting 200 samples in estimated 5.0007 s (60340200 iterations)
+Benchmarking read_entire_slice_from_0x37fffff00: Analyzing
+read_entire_slice_from_0x37fffff00
+                        time:   [81.635 ns 82.426 ns 83.265 ns]
+                        change: [+12.391% +13.708% +15.130%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 4 outliers among 200 measurements (2.00%)
+  4 (2.00%) high mild
+slope  [81.635 ns 83.265 ns] R^2            [0.5084643 0.5075325]
+mean   [82.312 ns 83.934 ns] std. dev.      [5.0685 ns 6.6787 ns]
+median [79.785 ns 80.633 ns] med. abs. dev. [1.4012 ns 2.7542 ns]
+
+Benchmarking read_slice_from_0x37fffff00
+Benchmarking read_slice_from_0x37fffff00: Warming up for 3.0000 s
+Benchmarking read_slice_from_0x37fffff00: Collecting 200 samples in estimated 5.0011 s (60420600 iterations)
+Benchmarking read_slice_from_0x37fffff00: Analyzing
+read_slice_from_0x37fffff00
+                        time:   [81.571 ns 82.261 ns 83.007 ns]
+                        change: [+13.626% +14.952% +16.254%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [81.571 ns 83.007 ns] R^2            [0.5376523 0.5365444]
+mean   [82.583 ns 84.103 ns] std. dev.      [4.8867 ns 6.0941 ns]
+median [80.181 ns 81.017 ns] med. abs. dev. [1.4514 ns 2.8610 ns]
+
+Benchmarking write_to_0x37fffff00
+Benchmarking write_to_0x37fffff00: Warming up for 3.0000 s
+Benchmarking write_to_0x37fffff00: Collecting 200 samples in estimated 5.0018 s (44742600 iterations)
+Benchmarking write_to_0x37fffff00: Analyzing
+write_to_0x37fffff00    time:   [108.11 ns 109.12 ns 110.17 ns]
+                        change: [+2.7394% +4.0525% +5.4421%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 11 outliers among 200 measurements (5.50%)
+  11 (5.50%) high mild
+slope  [108.11 ns 110.17 ns] R^2            [0.5318760 0.5313016]
+mean   [108.98 ns 111.04 ns] std. dev.      [6.5259 ns 8.2317 ns]
+median [107.64 ns 109.74 ns] med. abs. dev. [5.3055 ns 7.9887 ns]
+
+Benchmarking write_to_file_0x37fffff00
+Benchmarking write_to_file_0x37fffff00: Warming up for 3.0000 s
+Benchmarking write_to_file_0x37fffff00: Collecting 200 samples in estimated 5.0189 s (1929600 iterations)
+Benchmarking write_to_file_0x37fffff00: Analyzing
+write_to_file_0x37fffff00
+                        time:   [2.6609 us 2.7020 us 2.7498 us]
+                        change: [-4.4007% -2.9682% -1.5243%] (p = 0.00 < 0.05)
+                        Performance has improved.
+Found 7 outliers among 200 measurements (3.50%)
+  6 (3.00%) high mild
+  1 (0.50%) high severe
+slope  [2.6609 us 2.7498 us] R^2            [0.3638718 0.3611866]
+mean   [2.6250 us 2.6778 us] std. dev.      [156.27 ns 228.53 ns]
+median [2.5530 us 2.5801 us] med. abs. dev. [59.846 ns 109.34 ns]
+
+Benchmarking write_exact_to_0x37fffff00
+Benchmarking write_exact_to_0x37fffff00: Warming up for 3.0000 s
+Benchmarking write_exact_to_0x37fffff00: Collecting 200 samples in estimated 5.0009 s (41184900 iterations)
+Benchmarking write_exact_to_0x37fffff00: Analyzing
+write_exact_to_0x37fffff00
+                        time:   [120.52 ns 121.17 ns 121.82 ns]
+                        change: [+6.9852% +8.2766% +9.5569%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [120.52 ns 121.82 ns] R^2            [0.8067146 0.8068045]
+mean   [120.79 ns 121.99 ns] std. dev.      [3.8887 ns 4.7194 ns]
+median [120.67 ns 122.06 ns] med. abs. dev. [3.5056 ns 4.8983 ns]
+
+Benchmarking write_entire_slice_to_0x37fffff00
+Benchmarking write_entire_slice_to_0x37fffff00: Warming up for 3.0000 s
+Benchmarking write_entire_slice_to_0x37fffff00: Collecting 200 samples in estimated 5.0002 s (70108800 iterations)
+Benchmarking write_entire_slice_to_0x37fffff00: Analyzing
+write_entire_slice_to_0x37fffff00
+                        time:   [71.601 ns 72.163 ns 72.754 ns]
+                        change: [+0.7890% +1.7269% +2.6929%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 14 outliers among 200 measurements (7.00%)
+  14 (7.00%) high mild
+slope  [71.601 ns 72.754 ns] R^2            [0.6171080 0.6163145]
+mean   [71.645 ns 72.713 ns] std. dev.      [3.4043 ns 4.2942 ns]
+median [70.213 ns 70.906 ns] med. abs. dev. [1.3665 ns 2.4747 ns]
+
+Benchmarking write_slice_to_0x37fffff00
+Benchmarking write_slice_to_0x37fffff00: Warming up for 3.0000 s
+Benchmarking write_slice_to_0x37fffff00: Collecting 200 samples in estimated 5.0003 s (70068600 iterations)
+Benchmarking write_slice_to_0x37fffff00: Analyzing
+write_slice_to_0x37fffff00
+                        time:   [71.432 ns 72.016 ns 72.630 ns]
+                        change: [+1.3749% +2.6474% +3.8701%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 3 outliers among 200 measurements (1.50%)
+  3 (1.50%) high mild
+slope  [71.432 ns 72.630 ns] R^2            [0.6158402 0.6151756]
+mean   [72.508 ns 73.920 ns] std. dev.      [4.5796 ns 5.6470 ns]
+median [70.035 ns 71.300 ns] med. abs. dev. [1.5226 ns 3.3027 ns]
+
+Benchmarking read_obj_from_0x100
+Benchmarking read_obj_from_0x100: Warming up for 3.0000 s
+Benchmarking read_obj_from_0x100: Collecting 200 samples in estimated 5.0005 s (149503800 iterations)
+Benchmarking read_obj_from_0x100: Analyzing
+read_obj_from_0x100     time:   [33.320 ns 33.597 ns 33.887 ns]
+                        change: [+17.554% +18.957% +20.302%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [33.320 ns 33.887 ns] R^2            [0.5782215 0.5775249]
+mean   [33.382 ns 33.910 ns] std. dev.      [1.7254 ns 2.0683 ns]
+median [32.608 ns 32.972 ns] med. abs. dev. [657.90 ps 1.3356 ns]
+
+Benchmarking write_obj_to_0x100
+Benchmarking write_obj_to_0x100: Warming up for 3.0000 s
+Benchmarking write_obj_to_0x100: Collecting 200 samples in estimated 5.0000 s (177442800 iterations)
+Benchmarking write_obj_to_0x100: Analyzing
+write_obj_to_0x100      time:   [28.093 ns 28.311 ns 28.542 ns]
+                        change: [+1.3657% +2.3563% +3.3772%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 12 outliers among 200 measurements (6.00%)
+  11 (5.50%) high mild
+  1 (0.50%) high severe
+slope  [28.093 ns 28.542 ns] R^2            [0.6304712 0.6296017]
+mean   [28.186 ns 28.631 ns] std. dev.      [1.4156 ns 1.7931 ns]
+median [27.617 ns 27.808 ns] med. abs. dev. [503.92 ps 870.47 ps]
+
+Benchmarking read_obj_from_0x7ffffffc
+Benchmarking read_obj_from_0x7ffffffc: Warming up for 3.0000 s
+Benchmarking read_obj_from_0x7ffffffc: Collecting 200 samples in estimated 5.0010 s (82912500 iterations)
+Benchmarking read_obj_from_0x7ffffffc: Analyzing
+read_obj_from_0x7ffffffc
+                        time:   [59.738 ns 60.176 ns 60.656 ns]
+Found 19 outliers among 200 measurements (9.50%)
+  19 (9.50%) high mild
+slope  [59.738 ns 60.656 ns] R^2            [0.6311156 0.6298933]
+mean   [60.074 ns 61.021 ns] std. dev.      [3.0047 ns 3.7473 ns]
+median [58.739 ns 59.244 ns] med. abs. dev. [979.44 ps 1.9428 ns]
+
+Benchmarking write_obj_to_0x7ffffffc
+Benchmarking write_obj_to_0x7ffffffc: Warming up for 3.0000 s
+Benchmarking write_obj_to_0x7ffffffc: Collecting 200 samples in estimated 5.0010 s (89264100 iterations)
+Benchmarking write_obj_to_0x7ffffffc: Analyzing
+write_obj_to_0x7ffffffc time:   [55.280 ns 55.720 ns 56.191 ns]
+Found 22 outliers among 200 measurements (11.00%)
+  22 (11.00%) high mild
+slope  [55.280 ns 56.191 ns] R^2            [0.6436520 0.6427328]
+mean   [55.741 ns 56.657 ns] std. dev.      [2.9393 ns 3.6359 ns]
+median [54.382 ns 55.036 ns] med. abs. dev. [1.0901 ns 1.8674 ns]
+
+Benchmarking read_obj_from_0x37ffffffc
+Benchmarking read_obj_from_0x37ffffffc: Warming up for 3.0000 s
+Benchmarking read_obj_from_0x37ffffffc: Collecting 200 samples in estimated 5.0009 s (80219100 iterations)
+Benchmarking read_obj_from_0x37ffffffc: Analyzing
+read_obj_from_0x37ffffffc
+                        time:   [61.547 ns 62.031 ns 62.550 ns]
+Found 18 outliers among 200 measurements (9.00%)
+  18 (9.00%) high mild
+slope  [61.547 ns 62.550 ns] R^2            [0.6106802 0.6096497]
+mean   [61.684 ns 62.579 ns] std. dev.      [2.8279 ns 3.5640 ns]
+median [60.512 ns 60.907 ns] med. abs. dev. [829.99 ps 1.4029 ns]
+
+Benchmarking write_obj_to_0x37ffffffc
+Benchmarking write_obj_to_0x37ffffffc: Warming up for 3.0000 s
+Benchmarking write_obj_to_0x37ffffffc: Collecting 200 samples in estimated 5.0009 s (88198800 iterations)
+Benchmarking write_obj_to_0x37ffffffc: Analyzing
+write_obj_to_0x37ffffffc
+                        time:   [56.162 ns 56.484 ns 56.827 ns]
+Found 22 outliers among 200 measurements (11.00%)
+  13 (6.50%) high mild
+  9 (4.50%) high severe
+slope  [56.162 ns 56.827 ns] R^2            [0.7375524 0.7368815]
+mean   [56.201 ns 56.936 ns] std. dev.      [2.2804 ns 3.0045 ns]
+median [55.418 ns 55.787 ns] med. abs. dev. [924.72 ps 1.5195 ns]
+
+Benchmarking read_obj_from_0x100 #2
+Benchmarking read_obj_from_0x100 #2: Warming up for 3.0000 s
+Benchmarking read_obj_from_0x100 #2: Collecting 200 samples in estimated 5.0006 s (123092400 iterations)
+Benchmarking read_obj_from_0x100 #2: Analyzing
+read_obj_from_0x100 #2  time:   [40.470 ns 40.798 ns 41.148 ns]
+Found 1 outliers among 200 measurements (0.50%)
+  1 (0.50%) high mild
+slope  [40.470 ns 41.148 ns] R^2            [0.5762013 0.5753057]
+mean   [40.881 ns 41.592 ns] std. dev.      [2.3072 ns 2.8033 ns]
+median [39.819 ns 40.340 ns] med. abs. dev. [844.06 ps 1.5193 ns]
+
+Benchmarking write_obj_to_0x100 #2
+Benchmarking write_obj_to_0x100 #2: Warming up for 3.0000 s
+Benchmarking write_obj_to_0x100 #2: Collecting 200 samples in estimated 5.0004 s (162548700 iterations)
+Benchmarking write_obj_to_0x100 #2: Analyzing
+write_obj_to_0x100 #2   time:   [30.438 ns 30.697 ns 30.979 ns]
+Found 15 outliers among 200 measurements (7.50%)
+  15 (7.50%) high mild
+slope  [30.438 ns 30.979 ns] R^2            [0.5306459 0.5294126]
+mean   [31.053 ns 31.865 ns] std. dev.      [2.4825 ns 3.3207 ns]
+median [29.896 ns 30.196 ns] med. abs. dev. [558.84 ps 1.0273 ns]
+
+Benchmarking read_obj_from_0x7fffffe0
+Benchmarking read_obj_from_0x7fffffe0: Warming up for 3.0000 s
+Benchmarking read_obj_from_0x7fffffe0: Collecting 200 samples in estimated 5.0009 s (71314800 iterations)
+Benchmarking read_obj_from_0x7fffffe0: Analyzing
+read_obj_from_0x7fffffe0
+                        time:   [68.385 ns 68.872 ns 69.418 ns]
+Found 19 outliers among 200 measurements (9.50%)
+  18 (9.00%) high mild
+  1 (0.50%) high severe
+slope  [68.385 ns 69.418 ns] R^2            [0.5949444 0.5935187]
+mean   [68.648 ns 69.675 ns] std. dev.      [3.2196 ns 4.1901 ns]
+median [67.369 ns 67.743 ns] med. abs. dev. [1.0287 ns 1.6388 ns]
+
+Benchmarking write_obj_to_0x7fffffe0
+Benchmarking write_obj_to_0x7fffffe0: Warming up for 3.0000 s
+Benchmarking write_obj_to_0x7fffffe0: Collecting 200 samples in estimated 5.0003 s (86269200 iterations)
+Benchmarking write_obj_to_0x7fffffe0: Analyzing
+write_obj_to_0x7fffffe0 time:   [56.505 ns 57.001 ns 57.543 ns]
+Found 6 outliers among 200 measurements (3.00%)
+  6 (3.00%) high mild
+slope  [56.505 ns 57.543 ns] R^2            [0.5442321 0.5428832]
+mean   [56.866 ns 57.847 ns] std. dev.      [3.1507 ns 3.9131 ns]
+median [55.519 ns 55.999 ns] med. abs. dev. [1.0792 ns 1.9524 ns]
+
+Benchmarking read_obj_from_0x37fffffe0
+Benchmarking read_obj_from_0x37fffffe0: Warming up for 3.0000 s
+Benchmarking read_obj_from_0x37fffffe0: Collecting 200 samples in estimated 5.0001 s (70350000 iterations)
+Benchmarking read_obj_from_0x37fffffe0: Analyzing
+read_obj_from_0x37fffffe0
+                        time:   [70.694 ns 71.348 ns 72.047 ns]
+slope  [70.694 ns 72.047 ns] R^2            [0.4844917 0.4835473]
+mean   [71.260 ns 72.553 ns] std. dev.      [4.2765 ns 4.9629 ns]
+median [69.067 ns 70.609 ns] med. abs. dev. [2.0136 ns 4.1227 ns]
+
+Benchmarking write_obj_to_0x37fffffe0
+Benchmarking write_obj_to_0x37fffffe0: Warming up for 3.0000 s
+Benchmarking write_obj_to_0x37fffffe0: Collecting 200 samples in estimated 5.0002 s (85264200 iterations)
+Benchmarking write_obj_to_0x37fffffe0: Analyzing
+write_obj_to_0x37fffffe0
+                        time:   [57.365 ns 57.863 ns 58.385 ns]
+Found 39 outliers among 200 measurements (19.50%)
+  20 (10.00%) high mild
+  19 (9.50%) high severe
+slope  [57.365 ns 58.385 ns] R^2            [0.6034496 0.6026471]
+mean   [57.652 ns 58.704 ns] std. dev.      [3.1965 ns 4.3843 ns]
+median [56.420 ns 56.912 ns] med. abs. dev. [1.0660 ns 1.6529 ns]
